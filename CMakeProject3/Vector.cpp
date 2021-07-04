@@ -27,7 +27,7 @@ T& Vector<T>::operator[](int i)
 }
 
 template<typename T>
-int Vector<T>::size()
+int Vector<T>::size() const
 {
 	return sz;
 }
@@ -71,11 +71,7 @@ Vector<T>::Vector(Vector&& a):elem{a.elem}, sz{a.sz}
 	a.sz = 0;
 }
 
-template<typename T>
-void Vector<T>::push_back(T t)
-{
-	
-}
+
 
 
 
