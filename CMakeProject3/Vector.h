@@ -4,17 +4,21 @@
 template<typename T>
 class Vector {
 public:
-	Vector(std::initializer_list<T>);
+	Vector(std::initializer_list<T> lst);
 	explicit Vector(int s);
 	T& operator[](int i);
-	int size() const;
+	int size();
+	int capacity();
+	void reserve(int newsz);
 	~Vector();
 	Vector(const Vector& a);
 	Vector& operator=(const Vector& a);
 	Vector(Vector&& a);
-	void push_back(T t);
+	Vector& operator=(Vector&& a);
+	void push_back(const T& t);
 private:
 	T* elem;
-	int sz;
+	T* space;
+	T* last;
 };
 

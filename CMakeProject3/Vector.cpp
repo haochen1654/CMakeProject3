@@ -8,13 +8,19 @@ Vector<T>::Vector(int s)
 	if (s < 0)
 		throw std::length_error{ "Vector constructor:negative size" };
 	elem = new T[s];
-	sz = s;
+	space = elem;
+	last = elem + s;
 }
 
 template<typename T>
-Vector<T>::Vector(std::initializer_list<T> lst) : elem{new T[lst.size()]}, sz{static_cast<int>(lst.size())}
+Vector<T>::Vector(std::initializer_list<T> lst) : elem{new T[lst.size()]}
 {
-	copy(lst.  begin(), lst.end(), elem);
+	int i = 0;
+	for (const T& x : lst) {
+		elem[i++] = x;
+	}
+	last = elem + s;
+	space = last;
 }
 
 template<typename T>
@@ -27,48 +33,107 @@ T& Vector<T>::operator[](int i)
 }
 
 template<typename T>
-int Vector<T>::size() const
+int Vector<T>::size()
 {
-	return sz;
+	return (int) (space - elem);
+}
+
+template<typename T>
+int Vector<T>::capacity()
+{
+	return (int) (last - elem);
+}
+
+template<typename T>
+void Vector<T>::reserve(int newsz)
+{
+	T* temp = new T[newsz];
+	int sz = size();
+	for (int i = 0; i < sz; i++)
+	{
+		temp[i] = elem[i];
+	}
+	delete[] elem;
+
+	last = temp + newsz;
+	space = temp + sz;
+	elem = temp;
 }
 
 template<typename T>
 Vector<T>::~Vector()
 {
+
 	delete[] elem;
+
 }
 
 //copy construct
 template<typename T>
-Vector<T>::Vector(const Vector<T>& a) : elem{new T[a.sz]}, sz{a.sz}
+Vector<T>::Vector(const Vector<T>& a) : elem{new T[a.size()]}
 {
-	 for (int i = 0; i != sz; i++)
+	 for (int i = 0; i != a.size(); i++)
 	 {
 		 elem[i] = a.elem[i];
 	 }
+	 last = elem + a.size();
+	 space = last;
 }
 
 //copy assignment
 template<typename T>
 Vector<T>& Vector<T>::operator=(const Vector<T>& a)
 {
-	T* p = new double[a.sz];
-	for (int i = 0; i != a.sz; i++)
+	T* p = new double[a.size()];
+	for (int i = 0; i != a.size(); i++)
 	{
 		p[i] = a.elem[i];
 	}
 	delete[] elem;
 	elem = p;
-	sz = a.sz;
+	last = elem + a.size();
+	space = last;
 	return *this;
+}
+
+//move construct
+template<typename T>
+Vector<T>::Vector(Vector&& a) : elem{a.elem}
+{
+	last = elem + a.size();
+	space = last;
+	a.elem = nullptr;
+	a.space = nullptr;
+	a.last = nullptr;
 }
 
 //move assignment
 template<typename T>
-Vector<T>::Vector(Vector&& a):elem{a.elem}, sz{a.sz}
+Vector<T>& Vector<T>::operator=(Vector&& a)
 {
+	T* p = new double[a.size()];
+	for (int i = 0; i != a.size(); i++)
+	{
+		p[i] = a.elem[i];
+	}
+	delete[] elem;
+	elem = p;
+	last = elem + a.size();
+	space = last;
 	a.elem = nullptr;
-	a.sz = 0;
+	a.space = nullptr;
+	a.last = nullptr;
+	return *this;
+}
+
+template<typename T>
+void Vector<T>::push_back(const T& t)
+{
+	if (capacity() < size() + 1) {
+		reserve(size() == 0 ? 8 : 2 * size());
+	} 
+	new(space) T{ t };
+	++space;
 }
 
 

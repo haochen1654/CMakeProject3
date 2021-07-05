@@ -1,12 +1,16 @@
-#include "Vector.cpp"
+﻿#include "Vector.cpp"
 #include <iostream>
 
 using namespace std;
-int main() {
-	Vector<double> v = Vector<double>(10);
 
+int main() {
+	Vector<int> v = Vector<int>(5);
 	for (int i = 0; i < 10; i++) {
-		v[i] = i;
+		v.push_back(i);
+		cout << " size is :" << v.size() << "capacity is :" << v.capacity();
+	}
+
+	for (int i = 0; i < v.size(); i ++) {
 		cout << v[i];
 	}
 	return 0;
