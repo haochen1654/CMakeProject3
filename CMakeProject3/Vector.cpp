@@ -47,9 +47,9 @@ int Vector<T>::capacity()
 template<typename T>
 void Vector<T>::reserve(int newsz)
 {
-	T* temp = new T[newsz];
 	int sz = size();
-	for (int i = 0; i < sz; i++)
+	T* temp = new T[newsz];
+	for (int i = 0; i < (sz < newsz ? newsz : sz); i++)
 	{
 		temp[i] = elem[i];
 	}
