@@ -2,6 +2,10 @@
 #include <iostream>
 
 using namespace std;
+struct Entry {
+	string name;
+	int number;
+};
 
 int main() {
 	Vector<int> v = Vector<int>(5);
